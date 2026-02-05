@@ -1,0 +1,199 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard - PyRaksha{% endblock
+%} {% block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="{{ url_for('admin.dashboard') }}" class="active"
+                    >Dashboard</a
+                >
+            </li>
+            <li><a href="{{ url_for('admin.sos_list') }}">SOS Events</a></li>
+            <li>
+                <a href="{{ url_for('admin.complaints_list') }}">Complaints</a>
+            </li>
+            <li><a href="{{ url_for('admin.users_list') }}">Users</a></li>
+            <li><a href="{{ url_for('admin.map_view') }}">Live Map</a></li>
+            <li><a href="{{ url_for('admin.analytics') }}">Analytics</a></li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ metrics.total_users }}</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--danger)">
+        <div class="stat-value">{{ metrics.active_sos }}</div>
+        <div class="stat-label">Active SOS</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--warning)">
+        <div class="stat-value">{{ metrics.pending_complaints }}</div>
+        <div class="stat-label">Pending Complaints</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--info)">
+        <div class="stat-value">{{ metrics.total_sos }}</div>
+        <div class="stat-label">Total SOS Events</div>
+    </div>
+</div>
+
+{% if active_sos %}
+<div
+    class="card"
+    style="
+        background: rgba(230, 38, 64, 0.1);
+        border-left: 4px solid var(--danger);
+        margin-bottom: var(--spacing-xl);
+    "
+>
+    <h2 style="color: var(--danger); margin-bottom: var(--spacing-md)">
+        ⚠️ {{ active_sos|length }} Active SOS Event(s)
+    </h2>
+    {% for sos in active_sos[:3] %}
+    <div class="card card-elevated" style="margin-bottom: var(--spacing-md)">
+        <div
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            "
+        >
+            <div>
+                <h3 style="margin-bottom: var(--spacing-xs)">
+                    {{ sos.user.name }}
+                </h3>
+                <p
+                    style="
+                        color: var(--text-secondary);
+                        font-size: var(--font-sm);
+                    "
+                >
+                    Started: {{ sos.start_time.strftime('%I:%M %p') }} •
+                    Duration: {{ '%d:%02d' % (sos.get_duration_seconds() // 60,
+                    sos.get_duration_seconds() % 60) }}
+                </p>
+            </div>
+            <a
+                href="{{ url_for('admin.sos_detail', sos_id=sos.sos_id) }}"
+                class="btn btn-danger"
+                >View Details</a
+            >
+        </div>
+    </div>
+    {% endfor %}
+    <a
+        href="{{ url_for('admin.sos_list') }}?status=active"
+        class="btn btn-primary"
+        >View All Active SOS</a
+    >
+</div>
+{% endif %}
+
+<div
+    style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+    "
+>
+    <div>
+        <h2 style="margin-bottom: var(--spacing-md)">Recent Complaints</h2>
+        {% if recent_complaints %} {% for complaint in recent_complaints %}
+        <div
+            class="card card-elevated"
+            style="margin-bottom: var(--spacing-md)"
+        >
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: start;
+                    margin-bottom: var(--spacing-sm);
+                "
+            >
+                <h3 style="flex: 1; margin: 0">{{ complaint.title }}</h3>
+                <span class="badge badge-{{ complaint.status }}"
+                    >{{ complaint.status.replace('_', ' ').title() }}</span
+                >
+            </div>
+            <p
+                style="
+                    color: var(--text-secondary);
+                    margin-bottom: var(--spacing-sm);
+                "
+            >
+                {{ complaint.user.name }}
+            </p>
+            <p style="color: var(--text-secondary); font-size: var(--font-sm)">
+                {{ complaint.timestamp.strftime('%b %d, %Y %I:%M %p') }}
+            </p>
+            <a
+                href="{{ url_for('admin.complaint_detail', complaint_id=complaint.complaint_id) }}"
+                style="font-size: var(--font-sm)"
+                >View Details →</a
+            >
+        </div>
+        {% endfor %} {% else %}
+        <p style="color: var(--text-secondary)">No recent complaints.</p>
+        {% endif %}
+    </div>
+
+    <div>
+        <h2 style="margin-bottom: var(--spacing-md)">Recent Activity</h2>
+        {% for activity in recent_activities %}
+        <div
+            class="card card-elevated"
+            style="margin-bottom: var(--spacing-md)"
+        >
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-md);
+                "
+            >
+                <div
+                    style="width: 40px; height: 40px; border-radius: 50%; background: {% if activity.type == 'sos' %}var(--danger){% else %}var(--primary){% endif %}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;"
+                >
+                    {% if activity.type == 'sos' %}S{% else %}C{% endif %}
+                </div>
+                <div style="flex: 1">
+                    <p style="margin: 0; font-weight: 500">
+                        {% if activity.type == 'sos' %}SOS Triggered{% else
+                        %}Complaint Filed{% endif %}
+                    </p>
+                    <p
+                        style="
+                            color: var(--text-secondary);
+                            font-size: var(--font-sm);
+                            margin: 0;
+                        "
+                    >
+                        {{ activity.user.name }} • {{
+                        activity.timestamp.strftime('%I:%M %p') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

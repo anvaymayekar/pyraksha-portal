@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block title %}SOS Events - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('admin.sos_list') }}" class="active"
+                    >SOS Events</a
+                >
+            </li>
+            <li>
+                <a href="{{ url_for('admin.complaints_list') }}">Complaints</a>
+            </li>
+            <li><a href="{{ url_for('admin.users_list') }}">Users</a></li>
+            <li><a href="{{ url_for('admin.map_view') }}">Live Map</a></li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">SOS Events</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Status</th>
+            <th>Started</th>
+            <th>Duration</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sos in sos_events %}
+        <tr>
+            <td>{{ sos.user.name }}</td>
+            <td>
+                <span class="badge badge-{{ sos.status }}"
+                    >{{ sos.status.upper() }}</span
+                >
+            </td>
+            <td>{{ sos.start_time.strftime('%b %d, %Y %I:%M %p') }}</td>
+            <td>
+                {{ '%d:%02d' % (sos.get_duration_seconds() // 60,
+                sos.get_duration_seconds() % 60) }}
+            </td>
+            <td>
+                <a
+                    href="{{ url_for('admin.sos_detail', sos_id=sos.sos_id) }}"
+                    class="btn btn-primary"
+                    style="padding: 6px 12px; font-size: var(--font-sm)"
+                    >View</a
+                >
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td
+                colspan="5"
+                style="text-align: center; color: var(--text-secondary)"
+            >
+                No SOS events found
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block title %}File Complaint{% endblock %} {% block
+navbar %}
+<nav class="navbar">
+    <div class="container navbar-content">
+        <a href="{{ url_for('user.dashboard') }}" class="navbar-brand"
+            >PyRaksha</a
+        >
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('user.complaints') }}" class="active"
+                    >Complaints</a
+                >
+            </li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container" style="padding-top: var(--spacing-xl); max-width: 800px">
+    <h1 style="margin-bottom: var(--spacing-xl)">File New Complaint</h1>
+    <div class="card">
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea
+                    name="description"
+                    class="form-control"
+                    rows="6"
+                    required
+                ></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location (Optional)</label>
+                <div
+                    style="
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: var(--spacing-md);
+                    "
+                >
+                    <input
+                        type="number"
+                        step="any"
+                        name="latitude"
+                        class="form-control"
+                        placeholder="Latitude"
+                    />
+                    <input
+                        type="number"
+                        step="any"
+                        name="longitude"
+                        class="form-control"
+                        placeholder="Longitude"
+                    />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Submit Complaint
+            </button>
+            <a
+                href="{{ url_for('user.complaints') }}"
+                class="btn btn-secondary"
+                style="margin-left: var(--spacing-sm)"
+                >Cancel</a
+            >
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block title %}SOS Details - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('admin.sos_list') }}" class="active"
+                    >SOS Events</a
+                >
+            </li>
+            <li>
+                <a href="{{ url_for('admin.complaints_list') }}">Complaints</a>
+            </li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">SOS Details</h1>
+<div class="card" style="margin-bottom: var(--spacing-lg)">
+    <h2>{{ sos.user.name }}</h2>
+    <p style="color: var(--text-secondary)">
+        {{ sos.user.email }} • {{ sos.user.phone }}
+    </p>
+    <div style="margin-top: var(--spacing-md)">
+        <span class="badge badge-{{ sos.status }}"
+            >{{ sos.status.upper() }}</span
+        >
+        <p style="margin-top: var(--spacing-md)">
+            Started: {{ sos.start_time.strftime('%b %d, %Y %I:%M %p') }}
+        </p>
+        <p>
+            Duration: {{ '%d:%02d:%02d' % (sos.get_duration_seconds() // 3600,
+            (sos.get_duration_seconds() % 3600) // 60,
+            sos.get_duration_seconds() % 60) }}
+        </p>
+    </div>
+</div>
+{% if sos.status == 'active' %}
+<div class="card">
+    <form
+        method="POST"
+        action="{{ url_for('admin.resolve_sos', sos_id=sos.sos_id) }}"
+    >
+        <div class="form-group">
+            <label class="form-label">Resolution Notes</label
+            ><textarea name="notes" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Resolve SOS</button>
+    </form>
+</div>
+{% endif %}
+<div id="map" style="margin-top: var(--spacing-lg)"></div>
+{% endblock %} {% block extra_js %}
+<script>
+    const locations = {{ sos.location_history.all()|map(attribute='to_dict')|list|tojson }};
+    const mapData = locations.map(loc => ({latitude: loc.latitude, longitude: loc.longitude, type: 'sos', popup: `<strong>SOS Location</strong><br>${new Date(loc.timestamp).toLocaleString()}`}));
+    if (mapData.length > 0) {
+        initMap('map', mapData, [mapData[mapData.length-1].latitude, mapData[mapData.length-1].longitude], 14);
+    }
+</script>
+{% endblock %}

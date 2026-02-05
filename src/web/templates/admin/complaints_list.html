@@ -1,0 +1,76 @@
+{% extends "base.html" %} {% block title %}Complaints - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin.sos_list') }}">SOS Events</a></li>
+            <li>
+                <a href="{{ url_for('admin.complaints_list') }}" class="active"
+                    >Complaints</a
+                >
+            </li>
+            <li><a href="{{ url_for('admin.users_list') }}">Users</a></li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">Complaints</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.user.name }}</td>
+            <td>{{ complaint.title }}</td>
+            <td>
+                <span class="badge badge-{{ complaint.status }}"
+                    >{{ complaint.status.replace('_', ' ').title() }}</span
+                >
+            </td>
+            <td>{{ complaint.timestamp.strftime('%b %d, %Y') }}</td>
+            <td>
+                <a
+                    href="{{ url_for('admin.complaint_detail', complaint_id=complaint.complaint_id) }}"
+                    class="btn btn-primary"
+                    style="padding: 6px 12px; font-size: var(--font-sm)"
+                    >View</a
+                >
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td
+                colspan="5"
+                style="text-align: center; color: var(--text-secondary)"
+            >
+                No complaints found
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %} {% block title %}My Complaints{% endblock %} {% block
+navbar %}
+<nav class="navbar">
+    <div class="container navbar-content">
+        <a href="{{ url_for('user.dashboard') }}" class="navbar-brand"
+            >PyRaksha</a
+        >
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('user.complaints') }}" class="active"
+                    >Complaints</a
+                >
+            </li>
+            <li><a href="{{ url_for('user.sos_history') }}">SOS History</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container" style="padding-top: var(--spacing-xl)">
+    <div
+        style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+        "
+    >
+        <h1>My Complaints</h1>
+        <a href="{{ url_for('user.new_complaint') }}" class="btn btn-primary"
+            >+ New Complaint</a
+        >
+    </div>
+    {% for complaint in complaints %}
+    <div class="card" style="margin-bottom: var(--spacing-md)">
+        <h3>{{ complaint.title }}</h3>
+        <p style="color: var(--text-secondary); margin: var(--spacing-sm) 0">
+            {{ complaint.description }}
+        </p>
+        <div
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            "
+        >
+            <span class="badge badge-{{ complaint.status }}"
+                >{{ complaint.status.replace('_', ' ').title() }}</span
+            >
+            <span style="color: var(--text-disabled); font-size: var(--font-sm)"
+                >{{ complaint.timestamp.strftime('%b %d, %Y') }}</span
+            >
+        </div>
+    </div>
+    {% else %}
+    <div class="card"><p>No complaints filed yet.</p></div>
+    {% endfor %}
+</div>
+{% endblock %}

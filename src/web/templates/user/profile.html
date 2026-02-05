@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %} {% block navbar
+%}
+<nav class="navbar">
+    <div class="container navbar-content">
+        <a href="{{ url_for('user.dashboard') }}" class="navbar-brand"
+            >PyRaksha</a
+        >
+        <ul class="navbar-nav">
+            <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('user.profile') }}" class="active"
+                    >Profile</a
+                >
+            </li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container" style="padding-top: var(--spacing-xl); max-width: 600px">
+    <h1 style="margin-bottom: var(--spacing-xl)">My Profile</h1>
+    <div class="card">
+        <div style="margin-bottom: var(--spacing-lg)">
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Name</label
+            >
+            <p style="font-size: var(--font-lg); margin-top: var(--spacing-xs)">
+                {{ current_user.name }}
+            </p>
+        </div>
+        <div style="margin-bottom: var(--spacing-lg)">
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Email</label
+            >
+            <p style="font-size: var(--font-lg); margin-top: var(--spacing-xs)">
+                {{ current_user.email }}
+            </p>
+        </div>
+        <div style="margin-bottom: var(--spacing-lg)">
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Phone</label
+            >
+            <p style="font-size: var(--font-lg); margin-top: var(--spacing-xs)">
+                {{ current_user.phone }}
+            </p>
+        </div>
+        <div style="margin-bottom: var(--spacing-lg)">
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Member Since</label
+            >
+            <p style="font-size: var(--font-lg); margin-top: var(--spacing-xs)">
+                {{ current_user.created_at.strftime('%B %d, %Y') }}
+            </p>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+{% endblock %}

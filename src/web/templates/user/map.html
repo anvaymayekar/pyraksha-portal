@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block title %}My Locations{% endblock %} {% block
+content %}
+<div class="container" style="padding-top: var(--spacing-xl)">
+    <h1 style="margin-bottom: var(--spacing-md)">My Location History</h1>
+    <div id="map"></div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+    const locations = {{ locations|tojson }};
+    const mapData = locations.map(loc => ({
+        latitude: loc.latitude,
+        longitude: loc.longitude,
+        type: 'user',
+        popup: `<strong>Location</strong><br>${new Date(loc.timestamp).toLocaleString()}`
+    }));
+    if (mapData.length > 0) {
+        const center = [mapData[0].latitude, mapData[0].longitude];
+        initMap('map', mapData, center, 12);
+    } else {
+        initMap('map', []);
+    }
+</script>
+{% endblock %}

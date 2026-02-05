@@ -1,0 +1,171 @@
+{% extends "base.html" %} {% block title %}Dashboard - PyRaksha{% endblock %} {%
+block navbar %}
+<nav class="navbar">
+    <div class="container navbar-content">
+        <a href="{{ url_for('user.dashboard') }}" class="navbar-brand"
+            >PyRaksha</a
+        >
+        <ul class="navbar-nav">
+            <li>
+                <a href="{{ url_for('user.dashboard') }}" class="active"
+                    >Dashboard</a
+                >
+            </li>
+            <li><a href="{{ url_for('user.complaints') }}">Complaints</a></li>
+            <li><a href="{{ url_for('user.sos_history') }}">SOS History</a></li>
+            <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+{% endblock %} {% block content %}
+<div class="container" style="padding-top: var(--spacing-xl)">
+    <h1 style="margin-bottom: var(--spacing-lg)">
+        Welcome, {{ current_user.name }}
+    </h1>
+
+    {% if active_sos %}
+    <div
+        class="card"
+        style="
+            background: var(--danger);
+            border-left: 4px solid var(--danger);
+            margin-bottom: var(--spacing-xl);
+        "
+    >
+        <h2 style="color: white; margin-bottom: var(--spacing-md)">
+            ⚠️ Active SOS
+        </h2>
+        <p style="color: white; margin-bottom: var(--spacing-md)">
+            You have an active emergency SOS
+        </p>
+        <a href="{{ url_for('user.map') }}" class="btn btn-primary"
+            >View on Map</a
+        >
+    </div>
+    {% endif %}
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ complaints|length }}</div>
+            <div class="stat-label">Total Complaints</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--danger)">
+            <div class="stat-value">{{ sos_events|length }}</div>
+            <div class="stat-label">SOS Events</div>
+        </div>
+        <div class="stat-card" style="border-left-color: var(--success)">
+            <div class="stat-value">
+                {{ active_sos|length if active_sos else 0 }}
+            </div>
+            <div class="stat-label">Active SOS</div>
+        </div>
+    </div>
+
+    <div
+        style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        "
+    >
+        <div>
+            <h2 style="margin-bottom: var(--spacing-md)">Recent Complaints</h2>
+            {% if complaints %} {% for complaint in complaints %}
+            <div
+                class="card card-elevated"
+                style="margin-bottom: var(--spacing-md)"
+            >
+                <h3 style="margin-bottom: var(--spacing-sm)">
+                    {{ complaint.title }}
+                </h3>
+                <p
+                    style="
+                        color: var(--text-secondary);
+                        margin-bottom: var(--spacing-sm);
+                    "
+                >
+                    {{ complaint.description[:100] }}{% if
+                    complaint.description|length > 100 %}...{% endif %}
+                </p>
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    "
+                >
+                    <span class="badge badge-{{ complaint.status }}"
+                        >{{ complaint.status.replace('_', ' ').title() }}</span
+                    >
+                    <span
+                        style="
+                            color: var(--text-disabled);
+                            font-size: var(--font-sm);
+                        "
+                    >
+                        {{ complaint.timestamp.strftime('%b %d, %Y') }}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+            <a href="{{ url_for('user.complaints') }}" class="btn btn-secondary"
+                >View All Complaints</a
+            >
+            {% else %}
+            <p style="color: var(--text-secondary)">No complaints filed yet.</p>
+            <a
+                href="{{ url_for('user.new_complaint') }}"
+                class="btn btn-primary"
+                >File Complaint</a
+            >
+            {% endif %}
+        </div>
+
+        <div>
+            <h2 style="margin-bottom: var(--spacing-md)">Recent SOS Events</h2>
+            {% if sos_events %} {% for sos in sos_events %}
+            <div
+                class="card card-elevated"
+                style="margin-bottom: var(--spacing-md)"
+            >
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: var(--spacing-sm);
+                    "
+                >
+                    <span class="badge badge-{{ sos.status }}"
+                        >{{ sos.status.upper() }}</span
+                    >
+                    <span
+                        style="
+                            color: var(--text-disabled);
+                            font-size: var(--font-sm);
+                        "
+                    >
+                        {{ sos.start_time.strftime('%b %d, %Y %I:%M %p') }}
+                    </span>
+                </div>
+                <p style="color: var(--text-secondary)">
+                    Duration: {{ '%d:%02d:%02d' % (sos.get_duration_seconds() //
+                    3600, (sos.get_duration_seconds() % 3600) // 60,
+                    sos.get_duration_seconds() % 60) }}
+                </p>
+            </div>
+            {% endfor %}
+            <a
+                href="{{ url_for('user.sos_history') }}"
+                class="btn btn-secondary"
+                >View All SOS Events</a
+            >
+            {% else %}
+            <p style="color: var(--text-secondary)">No SOS events.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

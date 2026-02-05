@@ -1,0 +1,105 @@
+{% extends "base.html" %} {% block title %}Register - PyRaksha{% endblock %} {%
+block body %}
+<div
+    style="
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background);
+        padding: var(--spacing-lg);
+    "
+>
+    <div class="card" style="max-width: 500px; width: 100%">
+        <div style="text-align: center; margin-bottom: var(--spacing-xl)">
+            <h1
+                style="
+                    color: var(--primary);
+                    font-size: var(--font-xxl);
+                    margin-bottom: var(--spacing-sm);
+                "
+            >
+                PyRaksha
+            </h1>
+            <p style="color: var(--text-secondary)">Create Account</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    placeholder="Enter your full name"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="Enter your email"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input
+                    type="tel"
+                    name="phone"
+                    class="form-control"
+                    placeholder="Enter your phone number"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="At least 6 characters"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input
+                    type="password"
+                    name="confirm_password"
+                    class="form-control"
+                    placeholder="Re-enter password"
+                    required
+                />
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+                style="width: 100%; margin-bottom: var(--spacing-md)"
+            >
+                Register
+            </button>
+
+            <div style="text-align: center">
+                <span style="color: var(--text-secondary)"
+                    >Already have an account?
+                </span>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block title %}Live Map - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin.sos_list') }}">SOS Events</a></li>
+            <li>
+                <a href="{{ url_for('admin.map_view') }}" class="active"
+                    >Live Map</a
+                >
+            </li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-md)">Live SOS Tracking</h1>
+<div id="map"></div>
+{% endblock %} {% block extra_js %}
+<script>
+    const activeLocations = {{ active_locations|tojson }};
+    const mapData = activeLocations.map(item => ({
+        latitude: item.location.latitude,
+        longitude: item.location.longitude,
+        type: 'sos',
+        popup: `<strong>${item.user_name}</strong><br>Last updated: ${new Date(item.location.timestamp).toLocaleString()}`
+    }));
+    initMap('map', mapData);
+    setInterval(() => { location.reload(); }, 30000);
+</script>
+{% endblock %}

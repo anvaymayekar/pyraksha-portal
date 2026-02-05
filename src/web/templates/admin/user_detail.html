@@ -1,0 +1,57 @@
+{% extends "base.html" %} {% block title %}User Details - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('admin.users_list') }}" class="active"
+                    >Users</a
+                >
+            </li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">User Activity</h1>
+<div class="card" style="margin-bottom: var(--spacing-lg)">
+    <h2>{{ activity.user.name }}</h2>
+    <p style="color: var(--text-secondary)">
+        {{ activity.user.email }} • {{ activity.user.phone }}
+    </p>
+    <p style="margin-top: var(--spacing-md)">
+        Member since: {% if activity.user.created_at %} {{
+        activity.user.created_at.strftime('%B %d, %Y') }} {% else %} — {% endif
+        %}
+    </p>
+</div>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ activity.complaints_count }}</div>
+        <div class="stat-label">Complaints Filed</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--danger)">
+        <div class="stat-value">{{ activity.sos_count }}</div>
+        <div class="stat-label">SOS Events</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--warning)">
+        <div class="stat-value">{{ activity.active_sos_count }}</div>
+        <div class="stat-label">Active SOS</div>
+    </div>
+</div>
+{% endblock %}

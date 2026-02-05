@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% block title %}Complaint Details - Admin{% endblock
+%} {% block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('admin.complaints_list') }}" class="active"
+                    >Complaints</a
+                >
+            </li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">Complaint Details</h1>
+<div class="card" style="margin-bottom: var(--spacing-lg)">
+    <h2>{{ complaint.title }}</h2>
+    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md)">
+        {{ complaint.description }}
+    </p>
+    <div
+        style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        "
+    >
+        <div>
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >User</label
+            >
+            <p>{{ complaint.user.name }} ({{ complaint.user.email }})</p>
+        </div>
+        <div>
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Status</label
+            >
+            <p>
+                <span class="badge badge-{{ complaint.status }}"
+                    >{{ complaint.status.replace('_', ' ').title() }}</span
+                >
+            </p>
+        </div>
+        <div>
+            <label
+                style="color: var(--text-secondary); font-size: var(--font-sm)"
+                >Filed</label
+            >
+            <p>{{ complaint.timestamp.strftime('%B %d, %Y %I:%M %p') }}</p>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <h3 style="margin-bottom: var(--spacing-md)">Update Status</h3>
+    <form
+        method="POST"
+        action="{{ url_for('admin.update_complaint_status', complaint_id=complaint.complaint_id) }}"
+    >
+        <div class="form-group">
+            <label class="form-label">New Status</label
+            ><select name="status" class="form-control" required>
+                <option
+                    value="pending"
+                    {%
+                    if
+                    complaint.status=="pending"
+                    %}selected{%
+                    endif
+                    %}
+                >
+                    Pending
+                </option>
+                <option
+                    value="under_review"
+                    {%
+                    if
+                    complaint.status=="under_review"
+                    %}selected{%
+                    endif
+                    %}
+                >
+                    Under Review
+                </option>
+                <option
+                    value="resolved"
+                    {%
+                    if
+                    complaint.status=="resolved"
+                    %}selected{%
+                    endif
+                    %}
+                >
+                    Resolved
+                </option>
+                <option
+                    value="closed"
+                    {%
+                    if
+                    complaint.status=="closed"
+                    %}selected{%
+                    endif
+                    %}
+                >
+                    Closed
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Notes</label
+            ><textarea name="notes" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}Login - PyRaksha{% endblock %} {%
+block body %}
+<div
+    style="
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background);
+    "
+>
+    <div class="card" style="max-width: 400px; width: 100%">
+        <div style="text-align: center; margin-bottom: var(--spacing-xl)">
+            <h1
+                style="
+                    color: var(--primary);
+                    font-size: var(--font-xxl);
+                    margin-bottom: var(--spacing-sm);
+                "
+            >
+                PyRaksha
+            </h1>
+            <p style="color: var(--text-secondary)">Portal Login</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="Enter your email"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Enter your password"
+                    required
+                />
+            </div>
+
+            <div
+                class="form-group"
+                style="
+                    display: flex;
+                    align-items: center;
+                    gap: var(--spacing-sm);
+                "
+            >
+                <input type="checkbox" name="remember" id="remember" />
+                <label
+                    for="remember"
+                    style="
+                        margin: 0;
+                        color: var(--text-secondary);
+                        cursor: pointer;
+                    "
+                    >Remember me</label
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+                style="width: 100%; margin-bottom: var(--spacing-md)"
+            >
+                Login
+            </button>
+
+            <div style="text-align: center">
+                <span style="color: var(--text-secondary)"
+                    >Don't have an account?
+                </span>
+                <a href="{{ url_for('auth.register') }}">Register</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

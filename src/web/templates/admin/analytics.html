@@ -1,0 +1,81 @@
+{% extends "base.html" %} {% block title %}Analytics - Admin{% endblock %} {%
+block sidebar %}
+<aside class="sidebar">
+    <div
+        style="
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        "
+    >
+        <h2 style="color: var(--primary); margin: 0">PyRaksha Admin</h2>
+    </div>
+    <nav>
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li>
+                <a href="{{ url_for('admin.analytics') }}" class="active"
+                    >Analytics</a
+                >
+            </li>
+            <li>
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    style="color: var(--danger)"
+                    >Logout</a
+                >
+            </li>
+        </ul>
+    </nav>
+</aside>
+{% endblock %} {% block content %}
+<h1 style="margin-bottom: var(--spacing-xl)">Analytics & Reports</h1>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ metrics.total_users }}</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ metrics.total_complaints }}</div>
+        <div class="stat-label">Total Complaints</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ metrics.total_sos }}</div>
+        <div class="stat-label">Total SOS Events</div>
+    </div>
+    <div class="stat-card" style="border-left-color: var(--danger)">
+        <div class="stat-value">{{ metrics.active_sos }}</div>
+        <div class="stat-label">Active SOS</div>
+    </div>
+</div>
+<div
+    style="
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+    "
+>
+    <div class="card">
+        <h2 style="margin-bottom: var(--spacing-md)">
+            Complaint Status Distribution
+        </h2>
+        {% for status, count in status_distribution.items() %}
+        <div style="margin-bottom: var(--spacing-sm)">
+            <span class="badge badge-{{ status }}"
+                >{{ status.replace('_', ' ').title() }}</span
+            >
+            <span style="margin-left: var(--spacing-sm)">{{ count }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="card">
+        <h2 style="margin-bottom: var(--spacing-md)">Recent Trends</h2>
+        <p style="color: var(--text-secondary)">
+            SOS Events (Last 30 Days): {{ sos_trends|length }}
+        </p>
+        <p style="color: var(--text-secondary)">
+            Complaints (Last 30 Days): {{ complaint_trends|length }}
+        </p>
+    </div>
+</div>
+{% endblock %}

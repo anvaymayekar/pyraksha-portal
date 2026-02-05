@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}PyRaksha Portal{% endblock %}</title>
+        <link
+            rel="icon"
+            type="image/png"
+            href="{{ url_for('static', filename='img/icon.png') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/main.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+        {% block extra_css %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        <div class="app-wrapper">
+            {% block navbar %}{% endblock %} {% block sidebar %}{% endblock %}
+
+            <main class="{% block main_class %}main-content{% endblock %}">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %} {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %} {% endif %} {% endwith %} {% block content %}{%
+                endblock %}
+            </main>
+        </div>
+        {% endblock %}
+
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>
