@@ -22,23 +22,10 @@ class SOS(db.Model):
     resolved_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     notes = db.Column(db.Text)
 
-    user = db.relationship(
-        "User",
-        foreign_keys=[user_id],
-        back_populates="sos_events",
-    )
-
-    resolver = db.relationship(
-        "User",
-        foreign_keys=[resolved_by],
-        back_populates="resolved_sos_events",
-    )
-
+    user = db.relationship("User", foreign_keys=[user_id], back_populates="sos_events")
+    resolver = db.relationship("User", foreign_keys=[resolved_by])
     location_history = db.relationship(
-        "Location",
-        back_populates="sos",
-        lazy="dynamic",
-        cascade="all, delete-orphan",
+        "Location", back_populates="sos", lazy="dynamic", cascade="all, delete-orphan"
     )
 
     def activate(self) -> None:
@@ -70,7 +57,7 @@ class SOS(db.Model):
         data = {
             "id": self.id,
             "sos_id": self.sos_id,
-            "user_id": self.user_id,
+            "user_id": self.user.user_id if self.user else str(self.user_id),
             "status": self.status,
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "end_time": self.end_time.isoformat() if self.end_time else None,
