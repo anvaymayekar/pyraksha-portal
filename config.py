@@ -8,7 +8,8 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key-change-in-production"
     SQLALCHEMY_DATABASE_URI = (
-        f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'pyraksha.db')}"
+        os.environ.get("APP_URI")
+        or f"sqlite:///{os.path.join(BASE_DIR, 'instance', 'pyraksha.db')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = (
