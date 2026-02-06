@@ -3,6 +3,7 @@ from flask_login import current_user
 from config import get_config
 from src.core.extensions import init_extensions
 import os
+import uuid
 
 
 def create_app(config_name="default"):
@@ -81,7 +82,11 @@ def _create_default_admin():
 
     # Create admin user
     admin_user = User(
-        name=admin_name, email=admin_email, phone=admin_phone, role="admin"
+        user_id=str(uuid.uuid4()),  # <-- add this
+        name=admin_name,
+        email=admin_email,
+        phone=admin_phone,
+        role="admin",
     )
 
     # Set password (assuming your User model has set_password method)
